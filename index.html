@@ -1,0 +1,445 @@
+<!doctype html>
+<html lang="en" data-lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Halil Kabalcı — AI-assisted software builder</title>
+<meta name="description" content="Halil Kabalcı builds software with Claude Code agent teams and measures the result. Portfolio: The Foundry, Reactor, ReversalEA, Splash.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23161412'/%3E%3Ctext x='32' y='45' font-family='Georgia,serif' font-size='38' font-weight='700' text-anchor='middle' fill='%23ff6a1a'%3EK%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#f6f2ea; --surface:#fffdf8; --ink:#1b1916; --muted:#6b645a; --line:#e3dccf;
+  --accent:#e2560c; --accent-soft:#fde6d6; --ok:#2f7d4f; --ok-soft:#dcefe2;
+  --warn:#9a6a00; --warn-soft:#f7ecc9; --bad:#b3341f; --bad-soft:#f8dcd5;
+  --radius:14px; --max:1080px;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#141210; --surface:#1d1a17; --ink:#f1ebe1; --muted:#a39a8c; --line:#2f2a25;
+    --accent:#ff7a2e; --accent-soft:#3a2316; --ok:#6cc08c; --ok-soft:#1b2d21;
+    --warn:#e0b74d; --warn-soft:#2f2814; --bad:#ef7c66; --bad-soft:#35201b;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#141210; --surface:#1d1a17; --ink:#f1ebe1; --muted:#a39a8c; --line:#2f2a25;
+  --accent:#ff7a2e; --accent-soft:#3a2316; --ok:#6cc08c; --ok-soft:#1b2d21;
+  --warn:#e0b74d; --warn-soft:#2f2814; --bad:#ef7c66; --bad-soft:#35201b;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.65 Inter,system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+a{color:inherit}
+html[data-lang="en"] [lang="tr"], html[data-lang="tr"] [lang="en"]{display:none}
+.wrap{max-width:var(--max);margin:0 auto;padding:0 16px}
+@media(min-width:720px){.wrap{padding:0 32px}}
+.mono{font-family:"JetBrains Mono",ui-monospace,monospace}
+.grid>*,.strip>*,.steps>*,.skills>*,.feature>*,.honest>*{min-width:0}
+h1,h2,h3,p,li{overflow-wrap:break-word}
+.badge{max-width:100%;white-space:normal}
+@media(max-width:420px){.strip{grid-template-columns:1fr}}
+
+/* nav */
+header.nav{position:sticky;top:0;z-index:10;background:color-mix(in srgb,var(--bg) 88%,transparent);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+.nav .wrap{display:flex;align-items:center;justify-content:space-between;height:60px;gap:12px}
+.brand{font-family:Fraunces,Georgia,serif;font-weight:700;font-size:20px;text-decoration:none}
+.brand b{color:var(--accent)}
+.nav nav{display:flex;gap:20px;font-size:14px;color:var(--muted)}
+.nav nav a{text-decoration:none}.nav nav a:hover{color:var(--ink)}
+@media(max-width:720px){.nav nav{display:none}}
+.toggles{display:flex;gap:6px}
+.toggles button{font:600 12px "JetBrains Mono",monospace;background:var(--surface);color:var(--ink);border:1px solid var(--line);border-radius:8px;padding:6px 10px;cursor:pointer}
+.toggles button:hover{border-color:var(--accent)}
+
+/* hero */
+.hero{padding:72px 0 48px}
+.eyebrow{font:600 12px "JetBrains Mono",monospace;letter-spacing:.08em;text-transform:uppercase;color:var(--accent)}
+h1{font-family:Fraunces,Georgia,serif;font-weight:700;font-size:clamp(40px,7vw,76px);line-height:1.02;margin:14px 0 20px;letter-spacing:-.02em}
+h1 em{font-style:normal;color:var(--accent)}
+.lead{font-size:clamp(17px,2.1vw,20px);color:var(--muted);max-width:700px;margin:0}
+.lead strong{color:var(--ink);font-weight:600}
+.cta{display:flex;flex-wrap:wrap;gap:12px;margin-top:28px}
+.btn{display:inline-flex;align-items:center;gap:8px;padding:11px 18px;border-radius:10px;font-weight:600;font-size:15px;text-decoration:none;border:1px solid var(--line);background:var(--surface)}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:#fff}
+.btn:hover{transform:translateY(-1px)}
+
+/* measured strip */
+.strip{display:grid;grid-template-columns:repeat(2,1fr);gap:1px;background:var(--line);border:1px solid var(--line);border-radius:var(--radius);overflow:hidden;margin:8px 0 0}
+@media(min-width:860px){.strip{grid-template-columns:repeat(4,1fr)}}
+.stat{background:var(--surface);padding:20px}
+.stat .n{font-family:Fraunces,Georgia,serif;font-size:34px;font-weight:700;line-height:1}
+.stat .l{font-size:13.5px;color:var(--muted);margin-top:8px}
+.strip-note{font-size:13px;color:var(--muted);margin:10px 2px 0}
+
+/* sections */
+section{padding:64px 0 8px}
+h2{font-family:Fraunces,Georgia,serif;font-size:clamp(28px,4vw,40px);font-weight:700;margin:6px 0 10px;letter-spacing:-.01em}
+.sub{color:var(--muted);max-width:680px;margin:0 0 28px}
+
+/* featured */
+.feature{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:28px;display:grid;gap:28px}
+@media(min-width:900px){.feature{grid-template-columns:1.15fr 1fr;padding:36px}}
+.feature h3{font-family:Fraunces,Georgia,serif;font-size:28px;margin:8px 0 10px}
+.feature p{margin:0 0 12px}
+ul.ticks{list-style:none;padding:0;margin:14px 0 0}
+ul.ticks li{padding-left:22px;position:relative;margin:8px 0}
+ul.ticks li::before{content:"";position:absolute;left:2px;top:.62em;width:8px;height:8px;border-radius:2px;background:var(--accent)}
+.diagram{border:1px dashed var(--line);border-radius:12px;padding:18px;font-size:13px}
+.diagram svg{width:100%;height:auto;display:block}
+
+/* cards */
+.grid{display:grid;gap:18px}
+@media(min-width:760px){.grid{grid-template-columns:1fr 1fr}}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:24px;display:flex;flex-direction:column}
+.card h3{font-family:Fraunces,Georgia,serif;font-size:23px;margin:10px 0 6px}
+.card .kind{font-size:13px;color:var(--muted)}
+.card p{margin:10px 0}
+.card ul{margin:6px 0 0;padding-left:18px}
+.card li{margin:5px 0}
+.badge{display:inline-flex;align-items:center;gap:6px;font:600 11.5px "JetBrains Mono",monospace;padding:4px 9px;border-radius:999px;width:max-content}
+.badge::before{content:"";width:7px;height:7px;border-radius:50%;background:currentColor}
+.b-dev{color:var(--accent);background:var(--accent-soft)}
+.b-warn{color:var(--warn);background:var(--warn-soft)}
+.b-bad{color:var(--bad);background:var(--bad-soft)}
+.b-ok{color:var(--ok);background:var(--ok-soft)}
+.lesson{margin-top:auto;padding-top:14px;border-top:1px solid var(--line);font-size:14.5px;color:var(--muted)}
+.lesson b{color:var(--ink)}
+.stack{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px}
+.stack span{font:12px "JetBrains Mono",monospace;padding:3px 8px;border:1px solid var(--line);border-radius:6px;color:var(--muted)}
+
+/* how I work */
+.steps{display:grid;gap:14px;counter-reset:s}
+@media(min-width:860px){.steps{grid-template-columns:repeat(4,1fr)}}
+.step{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:20px}
+.step::before{counter-increment:s;content:"0" counter(s);font:600 12px "JetBrains Mono",monospace;color:var(--accent)}
+.step h4{margin:8px 0 6px;font-size:16px}
+.step p{margin:0;font-size:14.5px;color:var(--muted)}
+
+/* skills */
+.skills{display:grid;gap:14px}
+@media(min-width:760px){.skills{grid-template-columns:repeat(3,1fr)}}
+.skill{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:20px}
+.skill h4{margin:0 0 8px;font-size:15px}
+.skill p{margin:0;font-size:14.5px;color:var(--muted)}
+
+/* honest */
+.honest{background:var(--ink);color:var(--bg);border-radius:var(--radius);padding:28px;display:grid;gap:18px}
+@media(min-width:860px){.honest{grid-template-columns:1fr 1.4fr;padding:36px}}
+.honest h3{font-family:Fraunces,Georgia,serif;font-size:26px;margin:0}
+.honest ul{margin:0;padding-left:18px}
+.honest li{margin:6px 0}
+.honest .eyebrow{color:var(--accent)}
+
+/* contact */
+.contact{text-align:left;padding:72px 0}
+.contact .row{display:flex;flex-wrap:wrap;gap:12px;margin-top:20px}
+footer{border-top:1px solid var(--line);padding:24px 0 40px;font-size:13px;color:var(--muted)}
+footer .wrap{display:flex;flex-wrap:wrap;justify-content:space-between;gap:10px}
+</style>
+</head>
+<body>
+
+<header class="nav">
+  <div class="wrap">
+    <a class="brand" href="#top">Kabalcı<b>.</b></a>
+    <nav>
+      <a href="#foundry"><span lang="en">Foundry</span><span lang="tr">Foundry</span></a>
+      <a href="#projects"><span lang="en">Projects</span><span lang="tr">Projeler</span></a>
+      <a href="#how"><span lang="en">How I work</span><span lang="tr">Nasıl çalışırım</span></a>
+      <a href="#contact"><span lang="en">Contact</span><span lang="tr">İletişim</span></a>
+    </nav>
+    <div class="toggles">
+      <button id="langBtn" aria-label="Switch language">TR</button>
+      <button id="themeBtn" aria-label="Toggle dark mode">◐</button>
+    </div>
+  </div>
+</header>
+
+<main id="top">
+<div class="wrap">
+
+  <!-- HERO -->
+  <div class="hero">
+    <div class="eyebrow"><span lang="en">Halil Kabalcı · Turkey · open to remote &amp; on-site</span><span lang="tr">Halil Kabalcı · Türkiye · uzaktan ve ofiste çalışmaya açık</span></div>
+    <h1 lang="en">I build software with AI agent teams — and <em>measure</em> what they ship.</h1>
+    <h1 lang="tr">Yazılımı yapay zekâ ajan ekipleriyle inşa ediyorum — ve sonucu <em>ölçüyorum</em>.</h1>
+    <p class="lead" lang="en">I design and run <strong>Claude Code</strong> agent systems: each project gets its own squad of specialised agents, a cold-start critic that attacks every "done", and a knowledge base that records what was actually measured. Everything below was built that way, and I say so up front.</p>
+    <p class="lead" lang="tr"><strong>Claude Code</strong> üzerinde ajan sistemleri tasarlayıp çalıştırıyorum: her projenin kendi uzman ajan ekibi, her "bitti" iddiasına saldıran bağımsız bir eleştirmen ajanı ve gerçekte neyin ölçüldüğünü kaydeden bir bilgi tabanı var. Aşağıdaki her şey bu şekilde yapıldı ve bunu baştan söylüyorum.</p>
+    <div class="cta">
+      <a class="btn primary" href="#projects"><span lang="en">See the work</span><span lang="tr">İşleri gör</span> →</a>
+      <a class="btn" href="https://github.com/halilkkblc" target="_blank" rel="noopener">GitHub ↗</a>
+    </div>
+  </div>
+
+  <!-- MEASURED STRIP -->
+  <div class="strip">
+    <div class="stat"><div class="n">26%</div><div class="l" lang="en">Measured ship-readiness of a mobile app I had guessed at 65% — so I archived it instead of pretending.</div><div class="l" lang="tr">Benim %65 sandığım bir mobil uygulamanın ölçülen yayına hazırlığı — ben de rol yapmak yerine arşivledim.</div></div>
+    <div class="stat"><div class="n">10×</div><div class="l" lang="en">Unit bug found in a trading bot's stop-loss math from demo trade data, then fixed.</div><div class="l" lang="tr">Bir trade botunun stop-loss hesabında demo işlem verisinden bulunup düzeltilen birim hatası.</div></div>
+    <div class="stat"><div class="n">0 / 49</div><div class="l" lang="en">Parameter sets profitable out of sample — so that route was closed, not oversold.</div><div class="l" lang="tr">Örneklem dışında kârlı çıkan parametre seti — o yol abartılmadı, kapatıldı.</div></div>
+    <div class="stat"><div class="n">70 / 70</div><div class="l" lang="en">Flutter tests passing after a contract audit fixed the app↔API mismatches it found.</div><div class="l" lang="tr">Bir sözleşme denetimi bulduğu uygulama↔API uyumsuzluklarını düzelttikten sonra geçen Flutter testi.</div></div>
+  </div>
+  <p class="strip-note" lang="en">Every measured result on this page comes from a written, dated audit file — not from memory.</p>
+  <p class="strip-note" lang="tr">Bu sayfadaki her ölçüm sonucu ezberden değil, yazılı ve tarihli bir denetim dosyasından geliyor.</p>
+
+  <!-- FOUNDRY -->
+  <section id="foundry">
+    <div class="eyebrow"><span lang="en">Featured · infrastructure</span><span lang="tr">Öne çıkan · altyapı</span></div>
+    <h2>The Foundry</h2>
+    <div class="feature">
+      <div>
+        <span class="badge b-ok"><span lang="en">In daily use · private</span><span lang="tr">Her gün kullanımda · özel</span></span>
+        <h3 lang="en">A system that builds systems</h3>
+        <h3 lang="tr">Sistem kuran bir sistem</h3>
+        <p lang="en">A cross-project agent system on Claude Code. Every project gets its own squad of subagents, a knowledge vault holds each project's state, and a gate stops a new product from starting before the current one ships.</p>
+        <p lang="tr">Claude Code üzerinde, projeler arası çalışan bir ajan sistemi. Her projenin kendi alt-ajan ekibi var, her projenin durumu bir bilgi kasasında tutuluyor ve bir kapı, mevcut ürün yayınlanmadan yenisinin başlamasını engelliyor.</p>
+        <ul class="ticks">
+          <li lang="en">Agents never message each other: each one starts cold, and the system stays in sync through shared files and deterministic checks.</li>
+          <li lang="tr">Ajanlar birbirine mesaj atmaz: her biri sıfırdan başlar; sistem ortak dosyalar ve deterministik kontrollerle senkron kalır.</li>
+          <li lang="en">Core agents in every project: a critic that defaults to "refuted", and a user proxy that walks the product as a stranger.</li>
+          <li lang="tr">Her projede çekirdek ajanlar: varsayılanı "çürütüldü" olan bir eleştirmen ve ürünü yabancı bir kullanıcı gibi gezen bir temsilci.</li>
+          <li lang="en">System agents that check every path and cross-reference still resolves, and run the hook scripts against adversarial inputs.</li>
+          <li lang="tr">Her yolun ve çapraz referansın hâlâ çözüldüğünü denetleyen, hook betiklerini kötü niyetli girdilerle çalıştıran sistem ajanları.</li>
+          <li lang="en">PowerShell hooks: a session brief at start-up and a secret sentinel before tool use. Runtime config is mirrored into the vault and restorable.</li>
+          <li lang="tr">PowerShell hook'ları: açılışta oturum özeti ve araç kullanımından önce gizli-bilgi nöbetçisi. Çalışma ayarları kasaya yansıtılır ve geri yüklenebilir.</li>
+        </ul>
+        <div class="stack"><span>Claude Code</span><span>subagents</span><span>skills</span><span>hooks</span><span>MCP</span><span>PowerShell</span><span>Obsidian</span><span>Git</span></div>
+      </div>
+      <div class="diagram" aria-hidden="true">
+        <svg viewBox="0 0 360 300" font-family="JetBrains Mono, monospace" font-size="11">
+          <rect x="90" y="10" width="180" height="46" rx="10" fill="var(--accent-soft)" stroke="var(--accent)"/>
+          <text x="180" y="30" text-anchor="middle" fill="var(--ink)" font-weight="600">BRAIN (vault)</text>
+          <text x="180" y="46" text-anchor="middle" fill="var(--muted)">state · audits · decisions</text>
+          <rect x="10" y="96" width="150" height="40" rx="10" fill="var(--surface)" stroke="var(--line)"/>
+          <text x="85" y="114" text-anchor="middle" fill="var(--ink)">critic</text>
+          <text x="85" y="128" text-anchor="middle" fill="var(--muted)">defaults to REFUTED</text>
+          <rect x="200" y="96" width="150" height="40" rx="10" fill="var(--surface)" stroke="var(--line)"/>
+          <text x="275" y="114" text-anchor="middle" fill="var(--ink)">user proxy</text>
+          <text x="275" y="128" text-anchor="middle" fill="var(--muted)">walks it as a stranger</text>
+          <line x1="180" y1="56" x2="180" y2="176" stroke="var(--line)" stroke-width="2"/>
+          <line x1="85" y1="96" x2="150" y2="56" stroke="var(--line)" stroke-width="2"/>
+          <line x1="275" y1="96" x2="210" y2="56" stroke="var(--line)" stroke-width="2"/>
+          <rect x="10" y="176" width="105" height="54" rx="10" fill="var(--surface)" stroke="var(--line)"/>
+          <text x="62" y="198" text-anchor="middle" fill="var(--ink)">project A</text>
+          <text x="62" y="214" text-anchor="middle" fill="var(--muted)">squad × 4</text>
+          <rect x="127" y="176" width="105" height="54" rx="10" fill="var(--surface)" stroke="var(--line)"/>
+          <text x="180" y="198" text-anchor="middle" fill="var(--ink)">project B</text>
+          <text x="180" y="214" text-anchor="middle" fill="var(--muted)">squad × 3</text>
+          <rect x="244" y="176" width="105" height="54" rx="10" fill="var(--surface)" stroke="var(--line)"/>
+          <text x="296" y="198" text-anchor="middle" fill="var(--ink)">project C</text>
+          <text x="296" y="214" text-anchor="middle" fill="var(--muted)">squad × 5</text>
+          <line x1="62" y1="176" x2="150" y2="56" stroke="var(--line)" stroke-width="1.5" stroke-dasharray="3 3"/>
+          <line x1="296" y1="176" x2="210" y2="56" stroke="var(--line)" stroke-width="1.5" stroke-dasharray="3 3"/>
+          <rect x="60" y="254" width="240" height="34" rx="17" fill="none" stroke="var(--accent)" stroke-dasharray="4 3"/>
+          <text x="180" y="275" text-anchor="middle" fill="var(--accent)" font-weight="600">gate: one active product</text>
+        </svg>
+      </div>
+    </div>
+  </section>
+
+  <!-- PROJECTS -->
+  <section id="projects">
+    <div class="eyebrow"><span lang="en">Projects</span><span lang="tr">Projeler</span></div>
+    <h2 lang="en">What I've built, with its real status</h2>
+    <h2 lang="tr">Yaptıklarım, gerçek durumlarıyla</h2>
+    <p class="sub" lang="en">No status is rounded up. "In development" means in development.</p>
+    <p class="sub" lang="tr">Hiçbir durum yukarı yuvarlanmadı. "Geliştiriliyor" gerçekten geliştiriliyor demek.</p>
+
+    <div class="grid">
+      <!-- Reactor -->
+      <article class="card">
+        <span class="badge b-dev"><span lang="en">In development · not published</span><span lang="tr">Geliştiriliyor · yayınlanmadı</span></span>
+        <h3>Reactor</h3>
+        <div class="kind" lang="en">Roblox idle / tycoon game · Luau</div>
+        <div class="kind" lang="tr">Roblox idle / tycoon oyunu · Luau</div>
+        <p lang="en">Place buildings on a grid, route heat to adjacent generators, produce and sell energy, research upgrades, expand the plot.</p>
+        <p lang="tr">Izgaraya binalar yerleştir, ısıyı komşu jeneratörlere yönlendir, enerji üret ve sat, yükseltme araştır, arsayı büyüt.</p>
+        <ul lang="en">
+          <li>Heat routing, overload destruction, research, upgrades and plot expansion play-tested in Roblox Studio.</li>
+          <li>Play-tested from Claude Code through Roblox Studio's MCP server, with real mouse clicks.</li>
+          <li>An automated play-test pilot that picks each move from the legal ones.</li>
+          <li>Economy simulation on the real game code: active player reaches all v1 content in 2.1 days, idle player in ~19 days.</li>
+        </ul>
+        <ul lang="tr">
+          <li>Isı yönlendirme, aşırı yükte yıkım, araştırma, yükseltmeler ve arsa genişletme Roblox Studio'da test edildi.</li>
+          <li>Claude Code'dan Roblox Studio'nun MCP sunucusu üzerinden, gerçek fare tıklamalarıyla oynanarak test edildi.</li>
+          <li>Her hamleyi yasal olanlar arasından seçen otomatik bir test pilotu.</li>
+          <li>Gerçek oyun kodu üzerinde ekonomi simülasyonu: aktif oyuncu tüm v1 içeriğine 2,1 günde, pasif oyuncu ~19 günde ulaşıyor.</li>
+        </ul>
+        <div class="stack"><span>Luau</span><span>Rojo</span><span>Lune</span><span>Selene</span><span>StyLua</span><span>Roblox Studio MCP</span></div>
+        <p class="lesson" lang="en"><b>Not done yet:</b> player data saving has not run against a real DataStore; offline earnings await that test.</p>
+        <p class="lesson" lang="tr"><b>Henüz bitmedi:</b> oyuncu verisi kaydı gerçek bir DataStore'a karşı çalıştırılmadı; çevrimdışı kazanç bu testi bekliyor.</p>
+      </article>
+
+      <!-- ReversalEA -->
+      <article class="card">
+        <span class="badge b-bad"><span lang="en">Demo accounts only · net negative</span><span lang="tr">Sadece demo hesap · net zararda</span></span>
+        <h3>ReversalEA</h3>
+        <div class="kind" lang="en">MetaTrader 5 Expert Advisor · MQL5 · XAUUSD</div>
+        <div class="kind" lang="tr">MetaTrader 5 Expert Advisor · MQL5 · XAUUSD</div>
+        <p lang="en">A trading bot I treat as a measurement exercise. One position at a time, fixed USD profit target and loss limit, direction flips after a loss.</p>
+        <p lang="tr">Bir ölçüm egzersizi olarak ele aldığım bir trade botu. Aynı anda tek pozisyon, sabit USD kâr hedefi ve zarar limiti, zarardan sonra yön değiştirir.</p>
+        <ul lang="en">
+          <li>Trade-history analysis: 94.5% of one week's loss came from server hours 22–02 → hour and spread gates added.</li>
+          <li>Found and fixed a 10× unit error that made the backstop stop-loss ten times wider than designed.</li>
+          <li>Backtest on real ticks and a 49-combination optimisation, run through MT5's MCP server. 0 of 49 profitable out of sample.</li>
+          <li>Two-host setup: a 24/7 trading host and a read-only analysis host. The AI never calls trade tools.</li>
+        </ul>
+        <ul lang="tr">
+          <li>İşlem geçmişi analizi: bir haftalık zararın %94,5'i sunucu saati 22–02 arasından geldi → saat ve spread kapıları eklendi.</li>
+          <li>Yedek stop-loss'u tasarlanandan on kat geniş yapan 10× birim hatası bulundu ve düzeltildi.</li>
+          <li>Gerçek tick verisiyle backtest ve 49 kombinasyonlu optimizasyon, MT5'in MCP sunucusu üzerinden. Örneklem dışında 49'dan 0'ı kârlı.</li>
+          <li>İki makineli kurulum: 7/24 işlem makinesi ve salt-okunur analiz makinesi. Yapay zekâ işlem araçlarını asla çağırmaz.</li>
+        </ul>
+        <div class="stack"><span>MQL5</span><span>MT5 Strategy Tester</span><span>MT5 MCP</span><span>PowerShell</span></div>
+        <p class="lesson" lang="en"><b>Lesson:</b> a bot without a measured edge is not a product. I report the losses instead of hiding them.</p>
+        <p class="lesson" lang="tr"><b>Ders:</b> ölçülmüş bir avantajı olmayan bot ürün değildir. Zararları saklamak yerine raporluyorum.</p>
+      </article>
+
+      <!-- Splash -->
+      <article class="card">
+        <span class="badge b-warn"><span lang="en">Archived at 26% · never published</span><span lang="tr">%26'da arşivlendi · yayınlanmadı</span></span>
+        <h3>Splash</h3>
+        <div class="kind" lang="en">Community app for stand-up paddle boarders · Flutter + FastAPI</div>
+        <div class="kind" lang="tr">SUP (kürek sörfü) topluluk uygulaması · Flutter + FastAPI</div>
+        <p lang="en">A Flutter app with an async FastAPI backend, PostgreSQL + PostGIS and a React admin panel. I worked on hardening it.</p>
+        <p lang="tr">Async FastAPI backend, PostgreSQL + PostGIS ve React admin paneli olan bir Flutter uygulaması. Sağlamlaştırılması üzerinde çalıştım.</p>
+        <ul lang="en">
+          <li>Closed three security defects: a cross-account leak through a response cache, arbitrary file delete/write, and a logout that kept the token valid.</li>
+          <li>Contract audit across 212 app API calls and 133 server routes; fixed the shape mismatches and broken navigation.</li>
+          <li>After the fixes: <span class="mono">flutter test</span> 70/70, backend 36 tests passing, release APK building.</li>
+        </ul>
+        <ul lang="tr">
+          <li>Üç güvenlik açığı kapatıldı: yanıt önbelleği üzerinden hesaplar arası veri sızıntısı, keyfi dosya silme/yazma ve token'ı geçersiz kılmayan çıkış.</li>
+          <li>212 uygulama API çağrısı ve 133 sunucu rotası üzerinde sözleşme denetimi; şekil uyumsuzlukları ve bozuk yönlendirmeler düzeltildi.</li>
+          <li>Düzeltmelerden sonra: <span class="mono">flutter test</span> 70/70, backend'de 36 test geçti, release APK derleniyor.</li>
+        </ul>
+        <div class="stack"><span>Flutter</span><span>Dart</span><span>FastAPI</span><span>PostgreSQL</span><span>PostGIS</span></div>
+        <p class="lesson" lang="en"><b>Lesson:</b> the code looked nearly finished, but store accounts, signing and legal work were the real remaining effort. I now plan non-code work as real work.</p>
+        <p class="lesson" lang="tr"><b>Ders:</b> kod neredeyse bitmiş görünüyordu ama asıl kalan iş mağaza hesapları, imzalama ve yasal evraktı. Artık kod dışı işi de gerçek iş olarak planlıyorum.</p>
+      </article>
+
+      <!-- job_research -->
+      <article class="card">
+        <span class="badge b-dev"><span lang="en">In development · not run yet</span><span lang="tr">Geliştiriliyor · henüz çalıştırılmadı</span></span>
+        <h3>job_research</h3>
+        <div class="kind" lang="en">Personal job-search automation · Claude Code agents</div>
+        <div class="kind" lang="tr">Kişisel iş arama otomasyonu · Claude Code ajanları</div>
+        <p lang="en">Five agents designed to collect listings, score them against a facts file, and prepare a tailored CV per listing. Nothing is ever submitted without my approval.</p>
+        <p lang="tr">İlanları toplamak, bir gerçekler dosyasına göre puanlamak ve her ilana özel CV hazırlamak için tasarlanmış beş ajan. Hiçbir başvuru benim onayım olmadan gönderilmez.</p>
+        <ul lang="en">
+          <li>Listing and email text is treated as untrusted data: instructions found inside it are recorded, never followed.</li>
+          <li>Every claim a CV may make links to a file and line that proves it. This page uses the same rule.</li>
+        </ul>
+        <ul lang="tr">
+          <li>İlan ve e-posta metni güvenilmez veri sayılır: içinde bulunan talimatlar kaydedilir, asla uygulanmaz.</li>
+          <li>Bir CV'nin yapabileceği her iddia, onu kanıtlayan bir dosya ve satıra bağlı. Bu sayfa da aynı kuralı kullanıyor.</li>
+        </ul>
+        <div class="stack"><span>Claude Code</span><span>subagents</span><span>prompt-injection defence</span></div>
+        <p class="lesson" lang="en"><b>Not done yet:</b> the agents are defined; the first full run is ahead.</p>
+        <p class="lesson" lang="tr"><b>Henüz bitmedi:</b> ajanlar tanımlandı; ilk tam çalıştırma önümüzde.</p>
+      </article>
+    </div>
+  </section>
+
+  <!-- HOW I WORK -->
+  <section id="how">
+    <div class="eyebrow"><span lang="en">How I work</span><span lang="tr">Nasıl çalışırım</span></div>
+    <h2 lang="en">Agents do the building. Evidence decides.</h2>
+    <h2 lang="tr">İnşayı ajanlar yapar. Kararı kanıt verir.</h2>
+    <div class="steps">
+      <div class="step"><h4 lang="en">Scope a squad</h4><h4 lang="tr">Ekibi tanımla</h4><p lang="en">3–5 agents per project, each with one job: builders, read-only critics, a shipper for non-code work.</p><p lang="tr">Proje başına 3–5 ajan, her birinin tek işi var: inşa edenler, salt-okunur eleştirmenler, kod dışı iş için bir yayıncı.</p></div>
+      <div class="step"><h4 lang="en">Build</h4><h4 lang="tr">İnşa et</h4><p lang="en">Agents write and run code through Claude Code, connected to real tools over MCP (Roblox Studio, MetaTrader 5).</p><p lang="tr">Ajanlar Claude Code ile kod yazar ve çalıştırır; MCP üzerinden gerçek araçlara bağlıdır (Roblox Studio, MetaTrader 5).</p></div>
+      <div class="step"><h4 lang="en">Attack the claim</h4><h4 lang="tr">İddiaya saldır</h4><p lang="en">A critic that starts cold checks every "done" with file-and-line evidence and defaults to refuted.</p><p lang="tr">Sıfırdan başlayan bir eleştirmen her "bitti"yi dosya-satır kanıtıyla kontrol eder; varsayılanı çürütmektir.</p></div>
+      <div class="step"><h4 lang="en">Write it down</h4><h4 lang="tr">Kayda geçir</h4><p lang="en">Results go into dated audit files. If it wasn't measured, it says "not measured".</p><p lang="tr">Sonuçlar tarihli denetim dosyalarına girer. Ölçülmediyse "ölçülmedi" yazar.</p></div>
+    </div>
+  </section>
+
+  <!-- SKILLS -->
+  <section id="skills">
+    <div class="eyebrow"><span lang="en">Tools I've used in real projects</span><span lang="tr">Gerçek projelerde kullandığım araçlar</span></div>
+    <h2 lang="en">Skills, by where they were used</h2>
+    <h2 lang="tr">Beceriler, kullanıldıkları yere göre</h2>
+    <div class="skills">
+      <div class="skill"><h4>Claude Code &amp; agents</h4><p lang="en">Subagents, skills, hooks, settings, MCP servers at project/user scope — run as one system across projects.</p><p lang="tr">Alt-ajanlar, skill'ler, hook'lar, ayarlar, proje/kullanıcı kapsamında MCP sunucuları — projeler arası tek sistem olarak.</p></div>
+      <div class="skill"><h4>Roblox · Luau</h4><p lang="en">Rojo, Lune (tests &amp; simulation), Selene, StyLua, Studio MCP play-testing. Used in Reactor.</p><p lang="tr">Rojo, Lune (test ve simülasyon), Selene, StyLua, Studio MCP ile test. Reactor'da kullanıldı.</p></div>
+      <div class="skill"><h4>MetaTrader 5 · MQL5</h4><p lang="en">One Expert Advisor through v2.10–2.14, Strategy Tester backtests and optimisation. Used in ReversalEA.</p><p lang="tr">v2.10–2.14 arası tek bir Expert Advisor, Strategy Tester backtest ve optimizasyonu. ReversalEA'da kullanıldı.</p></div>
+      <div class="skill"><h4>Flutter · FastAPI</h4><p lang="en">Flutter/Dart app with an async FastAPI, PostgreSQL and PostGIS backend. Worked on in Splash.</p><p lang="tr">Async FastAPI, PostgreSQL ve PostGIS backend'li Flutter/Dart uygulaması. Splash'te üzerinde çalışıldı.</p></div>
+      <div class="skill"><h4>PowerShell · Git</h4><p lang="en">Hook and maintenance scripts, a trading-host deploy script; private GitHub repos as off-machine backup.</p><p lang="tr">Hook ve bakım betikleri, işlem makinesi kurulum betiği; makine dışı yedek olarak özel GitHub depoları.</p></div>
+      <div class="skill"><h4 lang="en">Languages</h4><h4 lang="tr">Diller</h4><p lang="en">Turkish (everyday) · English (C1, self-assessed).</p><p lang="tr">Türkçe (günlük dil) · İngilizce (C1, kendi değerlendirmem).</p></div>
+    </div>
+  </section>
+
+  <!-- HONEST -->
+  <section>
+    <div class="honest">
+      <div>
+        <div class="eyebrow"><span lang="en">Read this before hiring me</span><span lang="tr">Beni işe almadan önce okuyun</span></div>
+        <h3 lang="en">What I won't claim</h3>
+        <h3 lang="tr">İddia etmeyeceklerim</h3>
+      </div>
+      <ul lang="en">
+        <li>The code above was produced through Claude Code agents. I direct, review and verify it; I don't present it as hand-written.</li>
+        <li>Nothing has shipped to real users yet. The project repositories are private; I can walk you through them live.</li>
+        <li>I studied Computer Programming (associate degree) and left to build on my own. No degree.</li>
+        <li>I'd rather show you a measured 26% than an imagined 90%.</li>
+      </ul>
+      <ul lang="tr">
+        <li>Yukarıdaki kod Claude Code ajanlarıyla üretildi. Ben yönlendiriyor, inceliyor ve doğruluyorum; elle yazılmış gibi sunmuyorum.</li>
+        <li>Henüz gerçek kullanıcıya ulaşan bir ürün yok. Proje depoları özel; canlı olarak gösterebilirim.</li>
+        <li>Bilgisayar Programcılığı (ön lisans) okudum ve kendi işlerimi kurmak için bıraktım. Diplomam yok.</li>
+        <li>Hayali bir %90 yerine ölçülmüş bir %26 göstermeyi tercih ederim.</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- CONTACT -->
+  <section id="contact" class="contact">
+    <div class="eyebrow"><span lang="en">Contact</span><span lang="tr">İletişim</span></div>
+    <h2 lang="en">Let's talk.</h2>
+    <h2 lang="tr">Konuşalım.</h2>
+    <p class="sub" lang="en">Open to remote and on-site roles, full-time or freelance — AI automation, agent systems, Roblox/Luau, MQL5.</p>
+    <p class="sub" lang="tr">Uzaktan ve ofiste, tam zamanlı veya serbest işlere açığım — yapay zekâ otomasyonu, ajan sistemleri, Roblox/Luau, MQL5.</p>
+    <div class="row">
+      <!-- Email is assembled by script below so simple scrapers do not harvest it from the HTML. -->
+      <a class="btn primary" id="mailBtn" href="#contact" hidden>Email</a>
+      <a class="btn" href="https://github.com/halilkkblc" target="_blank" rel="noopener">GitHub ↗</a>
+    </div>
+  </section>
+
+</div>
+</main>
+
+<footer>
+  <div class="wrap">
+    <span>© 2026 Halil Kabalcı · kabalcı.com</span>
+    <span lang="en">Built with Claude Code. Numbers sourced from audit files.</span>
+    <span lang="tr">Claude Code ile yapıldı. Sayılar denetim dosyalarından.</span>
+  </div>
+</footer>
+
+<script>
+(function(){
+  var root=document.documentElement, store={};
+  try{store=window.localStorage}catch(e){store=null}
+  function get(k){try{return store&&store.getItem(k)}catch(e){return null}}
+  function set(k,v){try{store&&store.setItem(k,v)}catch(e){}}
+
+  var lang=get('lang')||((navigator.language||'').toLowerCase().indexOf('tr')===0?'tr':'en');
+  function applyLang(l){root.setAttribute('data-lang',l);root.lang=l;document.getElementById('langBtn').textContent=l==='tr'?'EN':'TR';
+    document.title=l==='tr'?'Halil Kabalcı — Yapay zekâ destekli yazılım geliştirici':'Halil Kabalcı — AI-assisted software builder';}
+  applyLang(lang);
+  document.getElementById('langBtn').onclick=function(){lang=lang==='tr'?'en':'tr';set('lang',lang);applyLang(lang)};
+
+  var mail=['halilkblc','gmail.com'].join('@'), mb=document.getElementById('mailBtn');
+  mb.href='mailto:'+mail; mb.textContent=mail; mb.hidden=false;
+
+  var theme=get('theme'); if(theme) root.setAttribute('data-theme',theme);
+  document.getElementById('themeBtn').onclick=function(){
+    var dark=root.getAttribute('data-theme')?root.getAttribute('data-theme')==='dark':matchMedia('(prefers-color-scheme: dark)').matches;
+    theme=dark?'light':'dark';root.setAttribute('data-theme',theme);set('theme',theme)};
+})();
+</script>
+</body>
+</html>
